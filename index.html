@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow - إدارة المهام اليومية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #f8fafc;
+            padding: 20px;
+        }
+        .app-container {
+            background: #1e293b;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border: 1px solid #334155;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #334155;
+        }
+        header h1 {
+            font-size: 24px;
+            color: #38bdf8;
+        }
+        .stats {
+            background: #0f172a;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            transition: 0.3s;
+        }
+        input[type="text"]:focus {
+            border-color: #38bdf8;
+        }
+        button.add-btn {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 0 22px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button.add-btn:hover {
+            background: #0284c7;
+            color: #fff;
+        }
+        ul.task-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .task-item {
+            background: #0f172a;
+            padding: 14px 18px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #334155;
+            transition: 0.2s;
+        }
+        .task-item.completed span {
+            text-decoration: line-through;
+            color: #64748b;
+        }
+        .task-text {
+            cursor: pointer;
+            flex: 1;
+            font-size: 15px;
+        }
+        .delete-btn {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .delete-btn:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <h1>مهامي اليومية</h1>
+        <div class="stats" id="taskCount">3 مهام متبقية</div>
+    </header>
+
+    <div class="input-group">
+        <input type="text" id="taskInput" placeholder="أضف مهمة جديدة هنا..." onkeypress="handleEnter(event)">
+        <button class="add-btn" onclick="addTask()">إضافة</button>
+    </div>
+
+    <ul class="task-list" id="taskList">
+        <li class="task-item completed">
+            <span class="task-text" onclick="toggleTask(this)">تصميم واجهة موقع PAPATI للمطاعم</span>
+            <button class="delete-btn" onclick="deleteTask(this)">حذف</button>
+        </li>
+        <li class="task-item">
+            <span class="task-text" onclick="toggleTask(this)">إكمال معرض الأعمال على منصة مستقل</span>
+            <button class="delete-btn" onclick="deleteTask(this)">حذف</button>
+        </li>
+        <li class="task-item">
+            <span class="task-text" onclick="toggleTask(this)">تقديم أول عرض على مشروع برمجي</span>
+            <button class="delete-btn" onclick="deleteTask(this)">حذف</button>
+        </li>
+    </ul>
+</div>
+
+<script>
+    function updateStats() {
+        const total = document.querySelectorAll('.task-item:not(.completed)').length;
+        document.getElementById('taskCount').textContent = `${total} مهام متبقية`;
+    }
+
+    function addTask() {
+        const input = document.getElementById('taskInput');
+        const text = input.value.trim();
+        if (!text) return;
+
+        const li = document.createElement('li');
+        li.className = 'task-item';
+        li.innerHTML = `
+            <span class="task-text" onclick="toggleTask(this)">${text}</span>
+            <button class="delete-btn" onclick="deleteTask(this)">حذف</button>
+        `;
+        document.getElementById('taskList').prepend(li);
+        input.value = '';
+        updateStats();
+    }
+
+    function toggleTask(span) {
+        span.parentElement.classList.toggle('completed');
+        updateStats();
+    }
+
+    function deleteTask(btn) {
+        btn.parentElement.remove();
+        updateStats();
+    }
+
+    function handleEnter(e) {
+        if (e.key === 'Enter') addTask();
+    }
+    updateStats();
+</script>
+
+</body>
+</html>
